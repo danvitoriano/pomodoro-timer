@@ -29,34 +29,35 @@ function App() {
     }
   }, [])
 
-  // Função para tocar um som de notificação agradável
+  // Função para tocar um som de alarme alto e chamativo
   const playNotificationSound = () => {
     if (!audioContextRef.current) return
 
     const ctx = audioContextRef.current
     const now = ctx.currentTime
 
-    // Criar três bips agradáveis
-    for (let i = 0; i < 3; i++) {
+    // Criar um alarme alto com múltiplos bips
+    for (let i = 0; i < 6; i++) {
       const oscillator = ctx.createOscillator()
       const gainNode = ctx.createGain()
 
       oscillator.connect(gainNode)
       gainNode.connect(ctx.destination)
 
-      // Frequências agradáveis (C5, E5, G5 - acorde de Dó maior)
-      const frequencies = [523.25, 659.25, 783.99]
-      oscillator.frequency.value = frequencies[i]
-      oscillator.type = 'sine'
+      // Alternar entre duas frequências altas para criar efeito de alarme
+      const frequencies = [880, 1046.5] // A5 e C6 - notas altas
+      oscillator.frequency.value = frequencies[i % 2]
+      oscillator.type = 'square' // Onda quadrada para som mais penetrante
 
-      // Envelope de volume suave
-      const startTime = now + i * 0.15
+      // Volume ALTO e constante
+      const startTime = now + i * 0.25
       gainNode.gain.setValueAtTime(0, startTime)
-      gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.05)
-      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4)
+      gainNode.gain.linearRampToValueAtTime(0.8, startTime + 0.01) // Volume bem alto (0.8)
+      gainNode.gain.setValueAtTime(0.8, startTime + 0.2)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.25)
 
       oscillator.start(startTime)
-      oscillator.stop(startTime + 0.4)
+      oscillator.stop(startTime + 0.25)
     }
   }
 
