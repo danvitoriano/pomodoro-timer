@@ -14,19 +14,51 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATIONS.pomodoro)
   const [isRunning, setIsRunning] = useState(false)
   const [pomodorosCompleted, setPomodorosCompleted] = useState(0)
+  const [showAlert, setShowAlert] = useState(false)
   const intervalRef = useRef<number | null>(null)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
 
   useEffect(() => {
-    // Criar elemento de áudio para notificação
-    audioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE')
+    // Inicializar AudioContext para criar sons personalizados
+    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
     
     return () => {
-      if (audioRef.current) {
-        audioRef.current = null
+      if (audioContextRef.current) {
+        audioContextRef.current.close()
       }
     }
   }, [])
+
+  // Função para tocar um som de notificação agradável
+  const playNotificationSound = () => {
+    if (!audioContextRef.current) return
+
+    const ctx = audioContextRef.current
+    const now = ctx.currentTime
+
+    // Criar três bips agradáveis
+    for (let i = 0; i < 3; i++) {
+      const oscillator = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+
+      oscillator.connect(gainNode)
+      gainNode.connect(ctx.destination)
+
+      // Frequências agradáveis (C5, E5, G5 - acorde de Dó maior)
+      const frequencies = [523.25, 659.25, 783.99]
+      oscillator.frequency.value = frequencies[i]
+      oscillator.type = 'sine'
+
+      // Envelope de volume suave
+      const startTime = now + i * 0.15
+      gainNode.gain.setValueAtTime(0, startTime)
+      gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.05)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4)
+
+      oscillator.start(startTime)
+      oscillator.stop(startTime + 0.4)
+    }
+  }
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
@@ -48,18 +80,36 @@ function App() {
     setIsRunning(false)
     
     // Tocar som de notificação
-    if (audioRef.current) {
-      audioRef.current.play().catch(() => {
-        // Ignorar erro se o navegador bloquear o áudio
-      })
-    }
+    playNotificationSound()
+
+    // Mostrar alerta visual
+    setShowAlert(true)
+    setTimeout(() => setShowAlert(false), 5000) // Esconder após 5 segundos
+
+    // Determinar mensagem baseada no modo
+    const message = mode === 'pomodoro' 
+      ? '🎉 Pomodoro completo! Hora de fazer uma pausa!' 
+      : '✨ Pausa terminada! Hora de voltar ao trabalho!'
 
     // Mostrar notificação do navegador
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Pomodoro Timer', {
-        body: mode === 'pomodoro' ? 'Hora de fazer uma pausa!' : 'Hora de voltar ao trabalho!',
+      const notification = new Notification('🍅 Pomodoro Timer', {
+        body: message,
         icon: '/pwa-192x192.png',
+        badge: '/pwa-192x192.png',
+        requireInteraction: true, // Notificação fica até ser fechada
       })
+      
+      // Vibração em dispositivos móveis (se suportado)
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200])
+      }
+      
+      // Focar na janela quando clicar na notificação
+      notification.onclick = () => {
+        window.focus()
+        notification.close()
+      }
     }
 
     if (mode === 'pomodoro') {
@@ -72,6 +122,34 @@ function App() {
       Notification.requestPermission()
     }
     setIsRunning(!isRunning)
+  }
+
+  const testNotification = () => {
+    // Tocar som
+    playNotificationSound()
+    
+    // Mostrar alerta visual
+    setShowAlert(true)
+    setTimeout(() => setShowAlert(false), 5000)
+    
+    // Solicitar permissão se necessário
+    if ('Notification' in window) {
+      if (Notification.permission === 'default') {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            new Notification('🍅 Pomodoro Timer', {
+              body: '✅ Notificações ativadas com sucesso!',
+              icon: '/pwa-192x192.png',
+            })
+          }
+        })
+      } else if (Notification.permission === 'granted') {
+        new Notification('🍅 Pomodoro Timer', {
+          body: '🔔 Teste de notificação - está funcionando!',
+          icon: '/pwa-192x192.png',
+        })
+      }
+    }
   }
 
   const resetTimer = () => {
@@ -95,6 +173,25 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+      {/* Alerta Visual */}
+      {showAlert && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 rounded-2xl shadow-2xl border-2 border-white flex items-center gap-3">
+            <span className="text-3xl">
+              {mode === 'pomodoro' ? '🎉' : '✨'}
+            </span>
+            <div>
+              <div className="font-bold text-lg">
+                {mode === 'pomodoro' ? 'Pomodoro Completo!' : 'Pausa Terminada!'}
+              </div>
+              <div className="text-sm opacity-90">
+                {mode === 'pomodoro' ? 'Hora de descansar!' : 'Hora de focar!'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="w-full max-w-md">
         {/* Card Principal */}
         <div className="bg-gray-800 rounded-3xl shadow-2xl p-8 border border-gray-700">
@@ -209,10 +306,18 @@ function App() {
           </div>
 
           {/* Estatísticas */}
-          <div className="bg-gray-900 rounded-xl p-4 text-center">
+          <div className="bg-gray-900 rounded-xl p-4 text-center mb-4">
             <div className="text-gray-400 text-sm mb-1">Pomodoros Completados</div>
             <div className="text-3xl font-bold text-white">{pomodorosCompleted}</div>
           </div>
+
+          {/* Botão de Teste de Notificação */}
+          <button
+            onClick={testNotification}
+            className="w-full py-3 px-4 rounded-xl font-medium bg-gray-900 hover:bg-gray-700 text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-gray-600"
+          >
+            🔔 Testar Som e Notificação
+          </button>
         </div>
 
         {/* Footer */}
