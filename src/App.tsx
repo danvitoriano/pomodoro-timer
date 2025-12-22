@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
-type TimerMode = 'pomodoro' | 'shortBreak' | 'longBreak' | 'test'
+type TimerMode = 'pomodoro' | 'shortBreak' | 'longBreak'
 
 const TIMER_DURATIONS = {
   pomodoro: 25 * 60,
   shortBreak: 5 * 60,
   longBreak: 15 * 60,
-  test: 30, // 30 segundos para teste
 }
 
 function App() {
@@ -301,7 +300,7 @@ function App() {
             localStorage.removeItem('pomodoroState')
             
             // Disparar notificação
-            const message = savedMode === 'pomodoro' || savedMode === 'test'
+            const message = savedMode === 'pomodoro'
               ? '🎉 Pomodoro completo! Hora de fazer uma pausa!' 
               : '✨ Pausa terminada! Hora de voltar ao trabalho!'
             
@@ -630,9 +629,7 @@ function App() {
                     ? 'text-red-500'
                     : mode === 'shortBreak'
                     ? 'text-green-500'
-                    : mode === 'longBreak'
-                    ? 'text-blue-500'
-                    : 'text-purple-500'
+                    : 'text-blue-500'
                 }`}
                 strokeLinecap="round"
               />
@@ -645,7 +642,7 @@ function App() {
                   {formatTime(timeLeft)}
                 </div>
                 <div className="text-gray-400 text-xs sm:text-sm md:text-base uppercase tracking-wider">
-                  {mode === 'pomodoro' ? 'FOCO' : mode === 'shortBreak' ? 'PAUSA CURTA' : mode === 'longBreak' ? 'PAUSA LONGA' : 'TESTE'}
+                  {mode === 'pomodoro' ? 'FOCO' : mode === 'shortBreak' ? 'PAUSA CURTA' : 'PAUSA LONGA'}
                 </div>
               </div>
             </div>
@@ -662,9 +659,7 @@ function App() {
                   ? 'bg-red-500 hover:bg-red-600 text-white'
                   : mode === 'shortBreak'
                   ? 'bg-green-500 hover:bg-green-600 text-white'
-                  : mode === 'longBreak'
-                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                  : 'bg-purple-600 hover:bg-purple-700 text-white'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
               } shadow-lg`}
             >
               {isRunning ? '⏸ Pausar' : '▶ Iniciar'}
@@ -702,18 +697,6 @@ function App() {
               </div>
             )}
             
-            <button
-              onClick={() => {
-                setMode('test')
-                setTimeLeft(30)
-                setIsRunning(false)
-                startTimeRef.current = null
-                initialTimeRef.current = 30
-              }}
-              className="w-full py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-bold text-sm sm:text-base md:text-lg bg-purple-600 hover:bg-purple-700 text-white transition-all border-2 border-purple-500"
-            >
-              ⚡ Teste Rápido (30s)
-            </button>
             <button
               onClick={testNotification}
               className="w-full py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-medium text-sm sm:text-base md:text-lg bg-gray-900 hover:bg-gray-700 text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-gray-600"
