@@ -1,51 +1,324 @@
-# 🍅 Pomodoro Timer
+<div align="center">
+  <h1>🍅 Pomodoro Timer</h1>
+  <p><strong>Timer Pomodoro moderno com notificações, sons e Wake Lock API</strong></p>
+  
+  <p>
+    <a href="https://pomodoro-timer-beryl-rho.vercel.app">🚀 Demo ao Vivo</a> •
+    <a href="#-funcionalidades">Funcionalidades</a> •
+    <a href="#-como-usar">Como Usar</a> •
+    <a href="#-tecnologias">Tecnologias</a>
+  </p>
 
-Um timer Pomodoro moderno e elegante construído com React, TypeScript, Tailwind CSS e PWA.
+  <img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Vite-7-646CFF?logo=vite" alt="Vite">
+  <img src="https://img.shields.io/badge/PWA-Enabled-success" alt="PWA">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</div>
 
-## ✨ Características
+---
 
-- ⏱️ Timer Pomodoro completo (25 min trabalho, 5 min pausa curta, 15 min pausa longa)
-- 🎨 Interface moderna e responsiva com Tailwind CSS
-- 📱 Progressive Web App (PWA) - instale no seu dispositivo
-- 🔔 Notificações do navegador quando o timer termina
-- 🔊 Som de alerta alto e chamativo ao completar
-- 📊 Contador de pomodoros completados
-- 🌙 Design dark mode elegante
-- 🔒 **Wake Lock API** - mantém a tela do celular ligada durante o timer
-- 📳 Vibração em dispositivos móveis ao completar
-- 🎯 Layout otimizado para mobile (Chrome e Safari)
-- ⏰ **Timer baseado em timestamp real** - continua rodando mesmo quando a tela trava
-- 💾 **Persistência de estado** - timer continua mesmo se você fechar o app
-- 🔄 **Recuperação automática** - recalcula o tempo correto ao voltar ao app
+## 📖 Sobre
 
-## 🚀 Tecnologias
+Um timer Pomodoro moderno e eficiente que ajuda você a manter o foco e aumentar a produtividade usando a técnica Pomodoro. Com suporte a notificações web, sons personalizados, vibração e Wake Lock API para manter a tela ligada durante o timer.
 
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- PWA (Service Worker + Manifest)
+### 🎯 Técnica Pomodoro
 
-## 💻 Desenvolvimento
+A técnica Pomodoro é um método de gerenciamento de tempo que usa um timer para dividir o trabalho em intervalos:
+- **25 minutos** de foco intenso (Pomodoro)
+- **5 minutos** de pausa curta
+- **15 minutos** de pausa longa (após 4 pomodoros)
+
+## ✨ Funcionalidades
+
+### Core Features
+- ⏱️ **Timer Pomodoro Completo** - 25 min trabalho, 5 min pausa curta, 15 min pausa longa
+- 🔄 **Timer Baseado em Timestamp** - Continua rodando mesmo quando a tela trava ou app fica em background
+- 💾 **Persistência de Estado** - Timer continua mesmo se você fechar o app
+- 📊 **Contador de Pomodoros** - Acompanhe quantos pomodoros você completou
+
+### Notificações & Alertas
+- 🔔 **Notificações Web** - Alertas automáticos quando o timer termina
+- 🔊 **Som Personalizado** - Alarme alto e chamativo usando Web Audio API
+- 📳 **Vibração Forte** - Feedback tátil de 3 segundos em dispositivos móveis
+- ✅ **Alerta Visual** - Banner verde grande e persistente
+
+### Mobile & PWA
+- 🔒 **Wake Lock API** - Mantém a tela do celular ligada durante o timer
+- 📱 **Progressive Web App** - Instalável como app nativo no celular
+- 🎨 **Layout Responsivo** - Interface adaptada para mobile, tablet e desktop
+- 🌙 **Dark Mode** - Design elegante com tema escuro
+
+### Tecnologias Avançadas
+- ⚡ **Verificador em Background** - Checa o timer a cada segundo mesmo em background
+- 🔄 **Recuperação Automática** - Recalcula o tempo correto ao voltar ao app
+- 💾 **LocalStorage** - Salva o estado do timer automaticamente
+
+## 🎯 Como Usar
+
+### 💻 Desktop
+
+1. Acesse [pomodoro-timer-beryl-rho.vercel.app](https://pomodoro-timer-beryl-rho.vercel.app)
+2. Clique em **"🔔 Ativar Notificações"** quando aparecer
+3. Escolha o modo:
+   - **Pomodoro** (25 min) - Para trabalho focado
+   - **Pausa Curta** (5 min) - Descanso rápido
+   - **Pausa Longa** (15 min) - Descanso prolongado
+4. Clique em **"▶ Iniciar"**
+5. Trabalhe focado! 🎯
+6. Receba alerta quando terminar
+
+### 📱 iOS/Safari
+
+> ⚠️ **Importante:** Devido a limitações da Apple, notificações em background não funcionam no Safari iOS. O app precisa estar aberto ou na lista de apps recentes.
+
+**Para melhor experiência no iOS:**
+
+1. **Adicione à Tela Inicial:**
+   - Toque no botão **"Compartilhar"** (quadrado com seta)
+   - Role e selecione **"Adicionar à Tela de Início"**
+   - Toque em **"Adicionar"**
+
+2. **Use o App:**
+   - Abra o app pelo ícone na tela inicial
+   - Ative notificações quando solicitado
+   - Inicie o timer
+   - **Mantenha o app aberto** ou na lista de apps recentes
+   - A Wake Lock API manterá a tela ligada ✨
+
+3. **Ao Voltar:**
+   - Quando você reabrir o app após o timer terminar
+   - Receberá **som + vibração + alerta visual** imediatamente
+
+### 🤖 Android/Chrome
+
+Funcionamento completo! Notificações funcionam mesmo com o app fechado.
+
+## 🛠️ Tecnologias
+
+### Frontend
+- **React 18** - Biblioteca UI
+- **TypeScript** - Type safety
+- **Vite 7** - Build tool ultra-rápido
+- **Tailwind CSS** - Styling utility-first
+
+### PWA & APIs
+- **Service Worker** - Cache e offline support
+- **Web App Manifest** - Instalação como app
+- **Wake Lock API** - Mantém tela ligada
+- **Notification API** - Notificações web
+- **Vibration API** - Feedback tátil
+- **Web Audio API** - Sons personalizados
+- **LocalStorage API** - Persistência de dados
+
+## 📦 Instalação & Desenvolvimento
+
+### Pré-requisitos
+- Node.js 20.19+ ou 22.12+
+- npm ou yarn
+
+### Instalação Local
 
 ```bash
-# Instalar dependências
+# Clone o repositório
+git clone https://github.com/danvitoriano/pomodoro-timer.git
+cd pomodoro-timer
+
+# Instale as dependências
 npm install
 
-# Rodar em desenvolvimento
+# Execute em desenvolvimento
 npm run dev
 
-# Build para produção
+# Acesse http://localhost:5173
+```
+
+### Build para Produção
+
+```bash
+# Criar build otimizado
 npm run build
 
-# Preview do build
+# Preview do build localmente
 npm run preview
 ```
 
-## 📦 Deploy
+### Scripts Disponíveis
 
-Este projeto está configurado para deploy na Vercel.
+```bash
+npm run dev      # Inicia servidor de desenvolvimento
+npm run build    # Cria build de produção
+npm run preview  # Preview do build
+npm run lint     # Verifica erros de código
+```
+
+## 🏗️ Estrutura do Projeto
+
+```
+pomodoro-timer/
+├── public/              # Assets estáticos
+│   ├── pwa-192x192.png # Ícone PWA 192x192
+│   ├── pwa-512x512.png # Ícone PWA 512x512
+│   └── apple-touch-icon.png
+├── src/
+│   ├── App.tsx         # Componente principal com toda a lógica
+│   ├── App.css         # Estilos customizados e responsividade
+│   ├── main.tsx        # Entry point da aplicação
+│   └── index.css       # Importação do Tailwind CSS
+├── vite.config.ts      # Config Vite + PWA plugin
+├── tsconfig.json       # Config TypeScript
+└── package.json        # Dependências e scripts
+```
+
+## 💡 Funcionalidades Técnicas
+
+### ⏰ Timer Baseado em Timestamp
+
+O timer usa `Date.now()` ao invés de simples `setInterval`, garantindo precisão absoluta mesmo quando:
+- A tela do celular trava
+- O app fica em background
+- O navegador suspende JavaScript
+- O sistema operacional economiza bateria
+
+```typescript
+// Cálculo preciso do tempo restante
+const elapsed = Math.floor((Date.now() - startTime) / 1000)
+const timeLeft = Math.max(0, initialTime - elapsed)
+```
+
+### 💾 Persistência no LocalStorage
+
+O estado do timer é salvo automaticamente a cada mudança:
+
+```typescript
+{
+  startTime: number,      // Timestamp Unix de início
+  initialTime: number,    // Duração total em segundos
+  mode: string,          // 'pomodoro' | 'shortBreak' | 'longBreak'
+  isRunning: boolean     // Estado atual do timer
+}
+```
+
+### 🔄 Verificador em Background
+
+Um `setInterval` independente roda a cada 1 segundo, verificando constantemente se o timer terminou:
+
+```typescript
+setInterval(() => {
+  const savedState = localStorage.getItem('pomodoroState')
+  if (timerFinished) {
+    // Dispara notificação + som + vibração
+    new Notification('🍅 Pomodoro Timer', { ... })
+  }
+}, 1000)
+```
+
+### 🔔 Sistema de Notificações
+
+Três camadas de alertas para garantir que você nunca perca:
+
+1. **Notificação Web** - Sistema operacional
+2. **Som Personalizado** - Web Audio API
+3. **Vibração** - Vibration API (3 segundos de pulsos)
+
+### 🔒 Wake Lock API
+
+Mantém a tela ligada automaticamente durante o timer:
+
+```typescript
+const wakeLock = await navigator.wakeLock.request('screen')
+// Tela não apaga durante o timer! ✨
+```
+
+## 🌐 Deploy
+
+### Vercel (Recomendado)
+
+Este projeto está otimizado para deploy na Vercel com CI/CD automático:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/danvitoriano/pomodoro-timer)
+
+### Outros Serviços
+
+- **Netlify** - `npm run build` → pasta `dist/`
+- **GitHub Pages** - Configure para servir a pasta `dist/`
+- **Firebase Hosting** - `firebase deploy`
+
+## 🤝 Contribuindo
+
+Contribuições são muito bem-vindas! Seja correção de bugs, novas funcionalidades ou melhorias na documentação.
+
+### Como Contribuir
+
+1. **Fork** o projeto
+2. Crie uma **branch** para sua feature (`git checkout -b feature/MinhaFeature`)
+3. **Commit** suas mudanças (`git commit -m 'feat: adiciona MinhaFeature'`)
+4. **Push** para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um **Pull Request**
+
+### Convenção de Commits
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` - Nova funcionalidade
+- `fix:` - Correção de bug
+- `docs:` - Mudanças na documentação
+- `style:` - Formatação, ponto e vírgula, etc
+- `refactor:` - Refatoração de código
+- `test:` - Adição de testes
+- `chore:` - Tarefas de build, configurações, etc
+
+## 📝 Roadmap
+
+- [ ] Estatísticas detalhadas de produtividade
+- [ ] Gráficos de progresso semanal/mensal
+- [ ] Temas de cores customizáveis
+- [ ] Sons de alarme personalizáveis
+- [ ] Integração com Notion/Todoist
+- [ ] Modo escuro/claro toggle
+- [ ] Configurações de tempo personalizadas
+- [ ] Histórico de pomodoros completados
+
+## ❓ FAQ
+
+### Por que as notificações não funcionam no Safari iOS?
+
+É uma limitação da Apple. O Safari iOS não suporta notificações web em background. Recomendamos manter o app aberto ou usar a Wake Lock API para manter a tela ligada.
+
+### O timer continua rodando se eu fechar o navegador?
+
+Sim! O estado é salvo no LocalStorage. Ao reabrir, o timer calcula quanto tempo passou e dispara a notificação se já terminou.
+
+### Posso usar offline?
+
+Sim! Como é uma PWA, o app funciona offline após a primeira visita.
+
+### Como instalar como app?
+
+No mobile: toque em "Adicionar à Tela Inicial" no menu do navegador.
+No desktop: clique no ícone de instalação na barra de endereço.
 
 ## 📄 Licença
 
-MIT
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 🙏 Agradecimentos
+
+- **Francesco Cirillo** - Criador da Técnica Pomodoro
+- **Comunidade React** - Pela excelente biblioteca
+- **Vercel** - Pelo hosting gratuito
+- Todos os contribuidores que ajudaram a melhorar o projeto
+
+## 📧 Contato
+
+**Dan Vitoriano**
+
+- GitHub: [@danvitoriano](https://github.com/danvitoriano)
+- Email: vitoriano08@gmail.com
+
+---
+
+<div align="center">
+  <p>Feito com ❤️ e muitos ☕ pomodoros</p>
+  <p>Se este projeto te ajudou, considere dar uma ⭐!</p>
+</div>
