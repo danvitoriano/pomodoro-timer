@@ -279,27 +279,27 @@ function App() {
         </div>
       )}
       
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md md:max-w-lg">
         {/* Card Principal */}
-        <div className="bg-gray-800 rounded-3xl shadow-2xl p-4 sm:p-8 border border-gray-700">
+        <div className="bg-gray-800 rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 border border-gray-700">
           {/* Header com logo */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <h1 className="text-3xl sm:text-4xl font-bold text-white">🍅 Pomodoro</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">🍅 Pomodoro</h1>
               {wakeLockActive && (
-                <span className="text-green-400 text-sm animate-pulse" title="Tela mantida ativa">
+                <span className="text-green-400 text-sm md:text-base animate-pulse" title="Tela mantida ativa">
                   🔒
                 </span>
               )}
             </div>
-            <p className="text-gray-400 text-xs sm:text-sm">Mantenha o foco e a produtividade</p>
+            <p className="text-gray-400 text-xs sm:text-sm md:text-base">Mantenha o foco e a produtividade</p>
           </div>
 
           {/* Seletor de Modo */}
           <div className="flex gap-1 sm:gap-2 mb-6 sm:mb-8 bg-gray-900 p-1 rounded-xl">
             <button
               onClick={() => switchMode('pomodoro')}
-              className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap ${
+              className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-4 md:px-6 rounded-lg font-medium text-xs sm:text-base md:text-lg transition-all whitespace-nowrap ${
                 mode === 'pomodoro'
                   ? 'bg-red-500 text-white shadow-lg'
                   : 'text-gray-400 hover:text-white'
@@ -309,30 +309,32 @@ function App() {
             </button>
             <button
               onClick={() => switchMode('shortBreak')}
-              className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap ${
+              className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-4 md:px-6 rounded-lg font-medium text-xs sm:text-base md:text-lg transition-all whitespace-nowrap ${
                 mode === 'shortBreak'
                   ? 'bg-green-500 text-white shadow-lg'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              Pausa<span className="hidden xs:inline"> Curta</span>
+              <span className="sm:hidden">Pausa C.</span>
+              <span className="hidden sm:inline">Pausa Curta</span>
             </button>
             <button
               onClick={() => switchMode('longBreak')}
-              className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap ${
+              className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-4 md:px-6 rounded-lg font-medium text-xs sm:text-base md:text-lg transition-all whitespace-nowrap ${
                 mode === 'longBreak'
                   ? 'bg-blue-500 text-white shadow-lg'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              Pausa<span className="hidden xs:inline"> Longa</span>
+              <span className="sm:hidden">Pausa L.</span>
+              <span className="hidden sm:inline">Pausa Longa</span>
             </button>
           </div>
 
           {/* Timer Display */}
-          <div className="relative mb-6 sm:mb-8 max-w-sm mx-auto">
+          <div className="relative mb-6 sm:mb-8 w-full max-w-[280px] sm:max-w-sm mx-auto aspect-square">
             {/* Círculo de progresso */}
-            <svg className="w-full h-auto -rotate-90" viewBox="0 0 200 200">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 200 200">
               <circle
                 cx="100"
                 cy="100"
@@ -365,10 +367,10 @@ function App() {
             {/* Tempo no centro */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center px-2">
-                <div className="text-5xl sm:text-6xl font-bold text-white mb-1 sm:mb-2 font-mono">
+                <div className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-1 sm:mb-2 font-mono">
                   {formatTime(timeLeft)}
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm uppercase tracking-wider">
+                <div className="text-gray-400 text-xs sm:text-sm md:text-base uppercase tracking-wider">
                   {mode === 'pomodoro' ? 'FOCO' : mode === 'shortBreak' ? 'PAUSA CURTA' : 'PAUSA LONGA'}
                 </div>
               </div>
@@ -379,7 +381,7 @@ function App() {
           <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6">
             <button
               onClick={toggleTimer}
-              className={`flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-bold text-base sm:text-lg transition-all transform hover:scale-105 active:scale-95 ${
+              className={`flex-1 py-3 sm:py-4 md:py-5 px-4 sm:px-6 md:px-8 rounded-xl font-bold text-base sm:text-lg md:text-xl transition-all transform hover:scale-105 active:scale-95 ${
                 isRunning
                   ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900'
                   : mode === 'pomodoro'
@@ -393,33 +395,33 @@ function App() {
             </button>
             <button
               onClick={resetTimer}
-              className="py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-bold text-base sm:text-lg bg-gray-700 hover:bg-gray-600 text-white transition-all transform hover:scale-105 active:scale-95 shadow-lg whitespace-nowrap"
+              className="py-3 sm:py-4 md:py-5 px-4 sm:px-6 md:px-8 rounded-xl font-bold text-base sm:text-lg md:text-xl bg-gray-700 hover:bg-gray-600 text-white transition-all transform hover:scale-105 active:scale-95 shadow-lg whitespace-nowrap"
             >
-              <span className="hidden xs:inline">↻ Reset</span>
-              <span className="xs:hidden">↻</span>
+              <span className="hidden sm:inline">↻ Reset</span>
+              <span className="sm:hidden">↻</span>
             </button>
           </div>
 
           {/* Estatísticas */}
-          <div className="bg-gray-900 rounded-xl p-3 sm:p-4 text-center mb-3 sm:mb-4">
-            <div className="text-gray-400 text-xs sm:text-sm mb-1">Pomodoros Completados</div>
-            <div className="text-2xl sm:text-3xl font-bold text-white">{pomodorosCompleted}</div>
+          <div className="bg-gray-900 rounded-xl p-3 sm:p-4 md:p-5 text-center mb-3 sm:mb-4">
+            <div className="text-gray-400 text-xs sm:text-sm md:text-base mb-1">Pomodoros Completados</div>
+            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">{pomodorosCompleted}</div>
           </div>
 
           {/* Botão de Teste de Notificação */}
           <button
             onClick={testNotification}
-            className="w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-medium text-sm sm:text-base bg-gray-900 hover:bg-gray-700 text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-gray-600"
+            className="w-full py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-medium text-sm sm:text-base md:text-lg bg-gray-900 hover:bg-gray-700 text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-gray-600"
           >
             🔔 Testar Som e Notificação
           </button>
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-4 sm:mt-6 text-gray-500 text-xs sm:text-sm px-4 space-y-1">
+        <div className="text-center mt-4 sm:mt-6 text-gray-500 text-xs sm:text-sm md:text-base px-4 space-y-1">
           <p>Técnica Pomodoro: 25 min foco + 5 min pausa</p>
           {wakeLockActive && (
-            <p className="text-green-400 text-xs">
+            <p className="text-green-400 text-xs sm:text-sm">
               🔒 Tela mantida ativa durante o timer
             </p>
           )}

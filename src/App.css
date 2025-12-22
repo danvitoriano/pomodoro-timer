@@ -18,11 +18,6 @@ input, select, textarea, button {
   font-size: 16px;
 }
 
-/* Garantir que elementos não ultrapassem a viewport */
-* {
-  max-width: 100%;
-}
-
 /* Ajustes para telas muito pequenas */
 @media (max-width: 360px) {
   .text-xs {
@@ -59,4 +54,9 @@ html {
 svg {
   max-width: 100%;
   height: auto;
+}
+
+/* Garantir aspecto quadrado do timer */
+.aspect-square {
+  aspect-ratio: 1 / 1;
 }
