@@ -26,6 +26,11 @@ function App() {
     // Inicializar AudioContext para criar sons personalizados
     audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
     
+    // Solicitar permissão de notificação logo no início
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission()
+    }
+    
     // Recuperar estado salvo do localStorage
     const savedState = localStorage.getItem('pomodoroState')
     if (savedState) {
@@ -42,8 +47,30 @@ function App() {
             startTimeRef.current = startTime
             initialTimeRef.current = initialTime
           } else {
-            // Timer já terminou enquanto estava fechado
+            // Timer já terminou enquanto estava fechado - disparar notificação
+            setMode(savedMode)
             localStorage.removeItem('pomodoroState')
+            
+            // Disparar notificação imediatamente
+            const message = savedMode === 'pomodoro' 
+              ? '🎉 Pomodoro completo! Hora de fazer uma pausa!' 
+              : '✨ Pausa terminada! Hora de voltar ao trabalho!'
+            
+            if ('Notification' in window && Notification.permission === 'granted') {
+              new Notification('🍅 Pomodoro Timer', {
+                body: message,
+                icon: '/pwa-192x192.png',
+                requireInteraction: true,
+                tag: 'pomodoro-complete',
+                silent: false,
+              })
+            }
+            
+            if ('vibrate' in navigator) {
+              navigator.vibrate([200, 100, 200, 100, 200])
+            }
+            
+            playNotificationSound()
           }
         }
       } catch (err) {
@@ -187,22 +214,38 @@ function App() {
   // Detectar quando a página volta ao foco e recalcular o tempo
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (!document.hidden && isRunning && startTimeRef.current) {
-        // Recalcular o tempo quando a página volta ao foco
-        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000)
-        const newTimeLeft = Math.max(0, initialTimeRef.current - elapsed)
-        setTimeLeft(newTimeLeft)
-        
-        if (newTimeLeft === 0) {
-          handleTimerComplete()
+      // Verificar estado salvo quando a página volta ao foco
+      const savedState = localStorage.getItem('pomodoroState')
+      if (!document.hidden && savedState) {
+        try {
+          const { startTime, initialTime } = JSON.parse(savedState)
+          const elapsed = Math.floor((Date.now() - startTime) / 1000)
+          const newTimeLeft = Math.max(0, initialTime - elapsed)
+          
+          if (newTimeLeft === 0) {
+            // Timer terminou enquanto estava em background
+            handleTimerComplete()
+          } else if (isRunning && startTimeRef.current) {
+            // Atualizar o tempo se ainda estiver rodando
+            setTimeLeft(newTimeLeft)
+          }
+        } catch (err) {
+          console.error('Erro ao verificar estado:', err)
         }
       }
     }
 
+    const handleFocus = () => {
+      // Também verificar quando a janela recebe foco
+      handleVisibilityChange()
+    }
+
     document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('focus', handleFocus)
     
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('focus', handleFocus)
     }
   }, [isRunning])
 
@@ -221,11 +264,74 @@ function App() {
     }
   }, [isRunning, mode])
 
+  // Verificador em background - roda mesmo quando a página não está visível
+  useEffect(() => {
+    const backgroundChecker = setInterval(() => {
+      const savedState = localStorage.getItem('pomodoroState')
+      if (savedState) {
+        try {
+          const { startTime, initialTime, mode: savedMode } = JSON.parse(savedState)
+          const elapsed = Math.floor((Date.now() - startTime) / 1000)
+          const timeLeft = initialTime - elapsed
+          
+          // Se o timer terminou
+          if (timeLeft <= 0) {
+            localStorage.removeItem('pomodoroState')
+            
+            // Disparar notificação
+            const message = savedMode === 'pomodoro' 
+              ? '🎉 Pomodoro completo! Hora de fazer uma pausa!' 
+              : '✨ Pausa terminada! Hora de voltar ao trabalho!'
+            
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const notification = new Notification('🍅 Pomodoro Timer', {
+                body: message,
+                icon: '/pwa-192x192.png',
+                requireInteraction: true,
+                tag: 'pomodoro-complete',
+                silent: false,
+              })
+              
+              notification.onclick = () => {
+                window.focus()
+                notification.close()
+              }
+            }
+            
+            // Vibração
+            if ('vibrate' in navigator) {
+              navigator.vibrate([200, 100, 200, 100, 200, 100, 200])
+            }
+            
+            // Se a página estiver visível, atualizar o estado
+            if (!document.hidden) {
+              setIsRunning(false)
+              startTimeRef.current = null
+              setTimeLeft(0)
+              playNotificationSound()
+              setShowAlert(true)
+              setTimeout(() => setShowAlert(false), 5000)
+              
+              if (savedMode === 'pomodoro') {
+                setPomodorosCompleted((count) => count + 1)
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Erro no verificador em background:', err)
+        }
+      }
+    }, 1000) // Verificar a cada segundo
+    
+    return () => clearInterval(backgroundChecker)
+  }, [])
+
   const handleTimerComplete = () => {
     setIsRunning(false)
     startTimeRef.current = null
+    localStorage.removeItem('pomodoroState')
     
-    // Tocar som de notificação
+    // Tocar som de notificação (só funciona se a página estiver em foco)
     playNotificationSound()
 
     // Mostrar alerta visual
@@ -237,25 +343,38 @@ function App() {
       ? '🎉 Pomodoro completo! Hora de fazer uma pausa!' 
       : '✨ Pausa terminada! Hora de voltar ao trabalho!'
 
-    // Mostrar notificação do navegador
+    // Vibração em dispositivos móveis (se suportado)
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200, 100, 200, 100, 200])
+    }
+
+    // Mostrar notificação do navegador com som
     if ('Notification' in window && Notification.permission === 'granted') {
       const notification = new Notification('🍅 Pomodoro Timer', {
         body: message,
         icon: '/pwa-192x192.png',
         badge: '/pwa-192x192.png',
         requireInteraction: true, // Notificação fica até ser fechada
+        tag: 'pomodoro-complete', // Evita notificações duplicadas
+        silent: false, // Tentar tocar som do sistema
       })
-      
-      // Vibração em dispositivos móveis (se suportado)
-      if ('vibrate' in navigator) {
-        navigator.vibrate([200, 100, 200])
-      }
       
       // Focar na janela quando clicar na notificação
       notification.onclick = () => {
         window.focus()
         notification.close()
       }
+    } else if ('Notification' in window && Notification.permission === 'default') {
+      // Se não tem permissão, solicitar
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          new Notification('🍅 Pomodoro Timer', {
+            body: message,
+            icon: '/pwa-192x192.png',
+            requireInteraction: true,
+          })
+        }
+      })
     }
 
     if (mode === 'pomodoro') {
