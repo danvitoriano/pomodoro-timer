@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer - Documentação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .app-link {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .app-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-tech {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge-status {
+            background: #10b981;
+            color: white;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: #f3f4f6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #ef4444;
+        }
+
+        pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background: transparent;
+            color: #f9fafb;
+            padding: 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .tech-item {
+            background: #f3f4f6;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid white;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍅 Pomodoro Timer</h1>
+            <p>Timer Pomodoro moderno e eficiente com PWA</p>
+            <a href="https://pomodoro-timer-beryl-rho.vercel.app" class="app-link" target="_blank">
+                🚀 Abrir Aplicativo
+            </a>
+        </header>
+
+        <div class="content">
+            <div class="badges">
+                <span class="badge badge-status">✅ Em Produção</span>
+                <span class="badge badge-tech">⚛️ React</span>
+                <span class="badge badge-tech">📘 TypeScript</span>
+                <span class="badge badge-tech">🎨 Tailwind CSS</span>
+                <span class="badge badge-tech">📱 PWA</span>
+            </div>
+
+            <h2>📖 Sobre o Projeto</h2>
+            <p>
+                Um timer Pomodoro completo e moderno, desenvolvido com React, TypeScript e Tailwind CSS. 
+                O aplicativo funciona como PWA (Progressive Web App), permitindo instalação no dispositivo 
+                e funcionamento offline.
+            </p>
+
+            <h2>✨ Funcionalidades</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>⏱️ Timer Pomodoro</h4>
+                    <p>Técnica Pomodoro completa com 25min de foco, 5min de pausa curta e 15min de pausa longa</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔔 Notificações</h4>
+                    <p>Alertas sonoros e notificações do sistema quando o timer termina</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 PWA</h4>
+                    <p>Instale no seu dispositivo e use como app nativo</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔒 Wake Lock</h4>
+                    <p>Mantém a tela ligada durante o timer (quando suportado)</p>
+                </div>
+                <div class="feature-card">
+                    <h4>💾 Persistência</h4>
+                    <p>Timer continua mesmo se você fechar o navegador</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📳 Vibração</h4>
+                    <p>Feedback háptico quando o timer termina (mobile)</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎨 Design Responsivo</h4>
+                    <p>Interface adaptada para desktop, tablet e mobile</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🌙 Interface Moderna</h4>
+                    <p>Design clean e intuitivo com animações suaves</p>
+                </div>
+            </div>
+
+            <h2>🛠️ Tecnologias Utilizadas</h2>
+            <div class="tech-stack">
+                <div class="tech-item">React 18</div>
+                <div class="tech-item">TypeScript</div>
+                <div class="tech-item">Vite</div>
+                <div class="tech-item">Tailwind CSS</div>
+                <div class="tech-item">PWA</div>
+            </div>
+
+            <h2>🚀 Como Usar</h2>
+            <h3>💻 Acesso Web</h3>
+            <p>Acesse diretamente pelo navegador:</p>
+            <pre><code>https://pomodoro-timer-beryl-rho.vercel.app</code></pre>
+
+            <h3>📱 Instalação como PWA</h3>
+            <p><strong>No Desktop (Chrome/Edge):</strong></p>
+            <ul>
+                <li>Clique no ícone de instalação (➕) na barra de endereços</li>
+                <li>Ou vá em Menu → Instalar Pomodoro Timer</li>
+            </ul>
+
+            <p><strong>No iOS (Safari):</strong></p>
+            <ul>
+                <li>Abra o app no Safari</li>
+                <li>Toque no botão Compartilhar (📤)</li>
+                <li>Selecione "Adicionar à Tela de Início"</li>
+                <li>Toque em "Adicionar"</li>
+            </ul>
+
+            <p><strong>No Android (Chrome):</strong></p>
+            <ul>
+                <li>Abra o app no Chrome</li>
+                <li>Toque no menu (⋮)</li>
+                <li>Selecione "Instalar app" ou "Adicionar à tela inicial"</li>
+            </ul>
+
+            <h2>📋 APIs Utilizadas</h2>
+            <ul>
+                <li><strong>Wake Lock API:</strong> Mantém a tela ligada durante o timer</li>
+                <li><strong>Web Notifications API:</strong> Notificações do sistema</li>
+                <li><strong>Web Audio API:</strong> Sons de alerta personalizados</li>
+                <li><strong>Vibration API:</strong> Feedback háptico no mobile</li>
+                <li><strong>LocalStorage API:</strong> Persistência de dados</li>
+                <li><strong>Service Worker:</strong> Funcionamento offline (PWA)</li>
+            </ul>
+
+            <h2>🔧 Desenvolvimento</h2>
+            <h3>Instalação</h3>
+            <pre><code># Clone o repositório
+git clone https://github.com/danvitoriano/pomodoro-timer.git
+
+# Entre na pasta
+cd pomodoro-timer
+
+# Instale as dependências
+npm install
+
+# Rode em desenvolvimento
+npm run dev</code></pre>
+
+            <h3>Build para Produção</h3>
+            <pre><code># Gerar build otimizado
+npm run build
+
+# Preview do build
+npm run preview</code></pre>
+
+            <h2>📝 Limitações Conhecidas</h2>
+            <h3>iOS/Safari</h3>
+            <ul>
+                <li><strong>Notificações em background:</strong> Safari no iOS não suporta notificações quando o app está em background ou a tela está bloqueada</li>
+                <li><strong>Solução:</strong> Mantenha o app aberto ou adicione à tela inicial para melhor experiência</li>
+                <li><strong>Wake Lock:</strong> Não suportado no Safari iOS</li>
+            </ul>
+
+            <h3>Navegadores Antigos</h3>
+            <ul>
+                <li>Wake Lock API não disponível em navegadores mais antigos</li>
+                <li>Notificações podem não funcionar em alguns navegadores</li>
+            </ul>
+
+            <h2>🤝 Contribuindo</h2>
+            <p>Contribuições são bem-vindas! Sinta-se à vontade para:</p>
+            <ul>
+                <li>Reportar bugs</li>
+                <li>Sugerir novas funcionalidades</li>
+                <li>Enviar pull requests</li>
+            </ul>
+            <p>Veja o arquivo <code>CONTRIBUTING.md</code> para mais detalhes.</p>
+
+            <h2>📄 Licença</h2>
+            <p>Este projeto está sob a licença MIT. Veja o arquivo <code>LICENSE</code> para mais detalhes.</p>
+
+            <h2>👨‍💻 Autor</h2>
+            <p><strong>Dan Vitoriano</strong></p>
+            <ul>
+                <li>GitHub: <a href="https://github.com/danvitoriano" target="_blank">@danvitoriano</a></li>
+            </ul>
+
+            <h2>🔗 Links Úteis</h2>
+            <ul>
+                <li><strong>Aplicativo:</strong> <a href="https://pomodoro-timer-beryl-rho.vercel.app" target="_blank">pomodoro-timer-beryl-rho.vercel.app</a></li>
+                <li><strong>Repositório:</strong> <a href="https://github.com/danvitoriano/pomodoro-timer" target="_blank">github.com/danvitoriano/pomodoro-timer</a></li>
+                <li><strong>Issues:</strong> <a href="https://github.com/danvitoriano/pomodoro-timer/issues" target="_blank">Reportar Bug</a></li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>Feito com ❤️ por <a href="https://github.com/danvitoriano" target="_blank">Dan Vitoriano</a></p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">© 2025 - Pomodoro Timer</p>
+        </footer>
+    </div>
+</body>
+</html>
+
