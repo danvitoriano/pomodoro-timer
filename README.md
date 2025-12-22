@@ -4,6 +4,7 @@
   
   <p>
     <a href="https://pomodoro-timer-beryl-rho.vercel.app">🚀 Demo ao Vivo</a> •
+    <a href="https://danvitoriano.github.io/pomodoro-timer/">📚 Documentação</a> •
     <a href="#-funcionalidades">Funcionalidades</a> •
     <a href="#-como-usar">Como Usar</a> •
     <a href="#-tecnologias">Tecnologias</a>
@@ -21,6 +22,8 @@
 ## 📖 Sobre
 
 Um timer Pomodoro moderno e eficiente que ajuda você a manter o foco e aumentar a produtividade usando a técnica Pomodoro. Com suporte a notificações web, sons personalizados, vibração e Wake Lock API para manter a tela ligada durante o timer.
+
+> 📚 **[Documentação Completa](https://danvitoriano.github.io/pomodoro-timer/)** - Visite nossa página de documentação para informações detalhadas sobre funcionalidades, APIs utilizadas, guias de instalação e muito mais!
 
 ### 🎯 Técnica Pomodoro
 
@@ -238,10 +241,15 @@ Este projeto está otimizado para deploy na Vercel com CI/CD automático:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/danvitoriano/pomodoro-timer)
 
+### GitHub Pages
+
+A documentação do projeto está hospedada no GitHub Pages:
+- **URL:** https://danvitoriano.github.io/pomodoro-timer/
+- **Deploy:** Automático via GitHub Actions (pasta `docs/`)
+
 ### Outros Serviços
 
 - **Netlify** - `npm run build` → pasta `dist/`
-- **GitHub Pages** - Configure para servir a pasta `dist/`
 - **Firebase Hosting** - `firebase deploy`
 
 ## 🤝 Contribuindo
@@ -315,6 +323,13 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 - GitHub: [@danvitoriano](https://github.com/danvitoriano)
 - Email: vitoriano08@gmail.com
+
+## 🔗 Links
+
+- **🚀 Aplicativo:** [pomodoro-timer-beryl-rho.vercel.app](https://pomodoro-timer-beryl-rho.vercel.app)
+- **📚 Documentação:** [danvitoriano.github.io/pomodoro-timer](https://danvitoriano.github.io/pomodoro-timer/)
+- **💻 Repositório:** [github.com/danvitoriano/pomodoro-timer](https://github.com/danvitoriano/pomodoro-timer)
+- **🐛 Issues:** [Reportar Bug](https://github.com/danvitoriano/pomodoro-timer/issues)
 
 ---
 
