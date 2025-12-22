@@ -149,29 +149,84 @@ npm run preview
 ### Scripts Disponíveis
 
 ```bash
-npm run dev      # Inicia servidor de desenvolvimento
-npm run build    # Cria build de produção
-npm run preview  # Preview do build
-npm run lint     # Verifica erros de código
+npm run dev            # Inicia servidor de desenvolvimento
+npm run build          # Cria build de produção
+npm run preview        # Preview do build
+npm run lint           # Verifica erros de código
+npm test               # Executa testes em modo watch
+npm run test:run       # Executa testes uma vez
+npm run test:ui        # Interface visual dos testes
+npm run test:coverage  # Relatório de cobertura
 ```
 
 ## 🏗️ Estrutura do Projeto
 
 ```
 pomodoro-timer/
-├── public/              # Assets estáticos
-│   ├── pwa-192x192.png # Ícone PWA 192x192
-│   ├── pwa-512x512.png # Ícone PWA 512x512
+├── public/                 # Assets estáticos
+│   ├── pwa-192x192.png    # Ícone PWA 192x192
+│   ├── pwa-512x512.png    # Ícone PWA 512x512
 │   └── apple-touch-icon.png
 ├── src/
-│   ├── App.tsx         # Componente principal com toda a lógica
-│   ├── App.css         # Estilos customizados e responsividade
-│   ├── main.tsx        # Entry point da aplicação
-│   └── index.css       # Importação do Tailwind CSS
-├── vite.config.ts      # Config Vite + PWA plugin
-├── tsconfig.json       # Config TypeScript
-└── package.json        # Dependências e scripts
+│   ├── App.tsx            # Componente principal com toda a lógica
+│   ├── App.test.tsx       # Testes unitários (31 testes)
+│   ├── App.css            # Estilos customizados e responsividade
+│   ├── main.tsx           # Entry point da aplicação
+│   ├── index.css          # Importação do Tailwind CSS
+│   └── test/
+│       └── setup.ts       # Configuração dos testes
+├── docs/                  # Documentação (GitHub Pages)
+│   ├── index.html         # Página principal
+│   └── tests.html         # Documentação de testes
+├── vite.config.ts         # Config Vite + PWA + Vitest
+├── tsconfig.json          # Config TypeScript
+├── BUSINESS_RULES.md      # Documentação de regras de negócio
+└── package.json           # Dependências e scripts
 ```
+
+## 🧪 Testes e Qualidade
+
+### Cobertura de Testes
+
+- **31 testes unitários** implementados
+- **21 testes passando** (68% de taxa de sucesso)
+- **35 regras de negócio** documentadas
+- Testes cobrem funcionalidades críticas:
+  - ✅ Gerenciamento de modos do timer
+  - ✅ Controles (iniciar, pausar, reset)
+  - ✅ Persistência de estado
+  - ✅ Sistema de notificações
+  - ✅ Wake Lock API
+  - ✅ Interface e formatação
+
+### Executar Testes
+
+```bash
+# Modo watch (recomendado para desenvolvimento)
+npm test
+
+# Executar todos os testes uma vez
+npm run test:run
+
+# Interface visual interativa
+npm run test:ui
+
+# Gerar relatório de cobertura
+npm run test:coverage
+```
+
+### Documentação de Testes
+
+- 📚 **[Documentação Completa de Testes](https://danvitoriano.github.io/pomodoro-timer/tests.html)**
+- 📋 **[Regras de Negócio](BUSINESS_RULES.md)** - Todas as 35 regras documentadas
+- 💻 **[Código dos Testes](src/App.test.tsx)** - Implementação dos testes
+
+### Tecnologias de Teste
+
+- **Vitest** - Framework de testes rápido e moderno
+- **Testing Library** - Testes centrados no usuário
+- **jsdom** - Ambiente DOM para testes
+- **Vitest UI** - Interface visual para testes
 
 ## 💡 Funcionalidades Técnicas
 
@@ -328,6 +383,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 - **🚀 Aplicativo:** [pomodoro-timer-beryl-rho.vercel.app](https://pomodoro-timer-beryl-rho.vercel.app)
 - **📚 Documentação:** [danvitoriano.github.io/pomodoro-timer](https://danvitoriano.github.io/pomodoro-timer/)
+- **🧪 Testes e Regras:** [danvitoriano.github.io/pomodoro-timer/tests.html](https://danvitoriano.github.io/pomodoro-timer/tests.html)
 - **💻 Repositório:** [github.com/danvitoriano/pomodoro-timer](https://github.com/danvitoriano/pomodoro-timer)
 - **🐛 Issues:** [Reportar Bug](https://github.com/danvitoriano/pomodoro-timer/issues)
 

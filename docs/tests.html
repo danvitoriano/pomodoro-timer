@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes e Regras de Negócio - Pomodoro Timer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .rule-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        .rule-id {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rule-description {
+            color: #555;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: #f3f4f6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #ef4444;
+        }
+
+        pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .category-card {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .category-title {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-count {
+            color: #764ba2;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .command-box {
+            background: #1f2937;
+            color: #10b981;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid white;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .stats-grid, .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧪 Testes e Regras de Negócio</h1>
+            <p>Documentação completa dos testes unitários e regras de negócio do Pomodoro Timer</p>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">🏠 Início</a>
+                <a href="https://pomodoro-timer-beryl-rho.vercel.app" class="nav-link" target="_blank">🚀 App</a>
+                <a href="https://github.com/danvitoriano/pomodoro-timer" class="nav-link" target="_blank">💻 GitHub</a>
+            </div>
+        </header>
+
+        <div class="content">
+            <h2>📊 Estatísticas de Testes</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">35</div>
+                    <div class="stat-label">Regras de Negócio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">31</div>
+                    <div class="stat-label">Testes Implementados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">21</div>
+                    <div class="stat-label">Testes Passando</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Taxa de Sucesso</div>
+                </div>
+            </div>
+
+            <h2>🎯 Categorias de Regras de Negócio</h2>
+            
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-title">⏱️ Timer</div>
+                    <div class="category-count">7</div>
+                    <p>Funcionamento e controles do timer</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">🔔 Notificações</div>
+                    <div class="category-count">7</div>
+                    <p>Sistema de alertas e notificações</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">💾 Persistência</div>
+                    <div class="category-count">6</div>
+                    <p>Salvamento e recuperação de estado</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">🔒 Wake Lock</div>
+                    <div class="category-count">4</div>
+                    <p>Manter tela ativa</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">🎨 Interface</div>
+                    <div class="category-count">5</div>
+                    <p>UI/UX e responsividade</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">🌐 Compatibilidade</div>
+                    <div class="category-count">3</div>
+                    <p>Suporte a navegadores</p>
+                </div>
+            </div>
+
+            <h2>📋 Principais Regras de Negócio Testadas</h2>
+
+            <h3>⏱️ Gerenciamento de Modos</h3>
+            
+            <div class="rule-card">
+                <div class="rule-id">RN-001: Durações dos Modos</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O timer deve ter durações específicas para cada modo:
+                    <ul>
+                        <li>Pomodoro: 25 minutos (1500 segundos)</li>
+                        <li>Pausa Curta: 5 minutos (300 segundos)</li>
+                        <li>Pausa Longa: 15 minutos (900 segundos)</li>
+                    </ul>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica tempo inicial de 25:00 no modo Pomodoro</li>
+                        <li>✅ Verifica tempo de 05:00 no modo Pausa Curta</li>
+                        <li>✅ Verifica tempo de 15:00 no modo Pausa Longa</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-002: Troca de Modo</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> Ao trocar de modo, o timer deve pausar automaticamente e resetar para a duração do novo modo.
+                    <br><br>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica que timer pausa ao trocar modo</li>
+                        <li>✅ Verifica que tempo reseta para duração do novo modo</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-003: Estado Inicial</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O aplicativo deve iniciar no modo Pomodoro, com timer pausado e contador de pomodoros em 0.
+                    <br><br>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica modo inicial Pomodoro</li>
+                        <li>✅ Verifica timer pausado</li>
+                        <li>✅ Verifica contador em 0</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <h3>⏰ Funcionamento do Timer</h3>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-004: Cálculo Baseado em Timestamp</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O timer usa <code>Date.now()</code> para calcular o tempo decorrido, garantindo precisão mesmo quando a tela trava ou o app fica em background.
+                    <br><br>
+                    <strong>Fórmula:</strong>
+                    <pre>timeLeft = initialTime - Math.floor((Date.now() - startTime) / 1000)</pre>
+                    <strong>Benefícios:</strong>
+                    <ul>
+                        <li>Funciona mesmo com tela travada</li>
+                        <li>Continua em background</li>
+                        <li>Não é afetado por suspensão do JavaScript</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Implementado</span>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-007: Controles do Timer</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O timer deve responder corretamente aos controles:
+                    <ul>
+                        <li><strong>Iniciar:</strong> Começa a contagem regressiva</li>
+                        <li><strong>Pausar:</strong> Para mantendo o tempo restante</li>
+                        <li><strong>Reset:</strong> Volta para duração completa</li>
+                    </ul>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Teste de iniciar timer</li>
+                        <li>✅ Teste de pausar timer</li>
+                        <li>✅ Teste de reset timer</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <h3>💾 Persistência de Dados</h3>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-008: Salvamento Automático</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O estado do timer é salvo automaticamente no localStorage quando está rodando.
+                    <br><br>
+                    <strong>Dados salvos:</strong>
+                    <pre>{
+  "startTime": number,     // Timestamp Unix
+  "initialTime": number,   // Duração total
+  "mode": string,          // Modo atual
+  "isRunning": boolean     // Estado
+}</pre>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica salvamento ao iniciar</li>
+                        <li>✅ Verifica remoção ao pausar</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-009: Recuperação de Estado</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> Ao abrir o app, verifica localStorage e recupera o estado do timer.
+                    <br><br>
+                    <strong>Comportamento:</strong>
+                    <ul>
+                        <li>Se ainda há tempo: continua de onde parou</li>
+                        <li>Se tempo acabou: dispara notificação imediatamente</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Implementado</span>
+            </div>
+
+            <h3>🔔 Sistema de Notificações</h3>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-011: Tipos de Notificação</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> Quando o timer completa, dispara 4 tipos de alerta:
+                    <ol>
+                        <li><strong>Som personalizado</strong> - Web Audio API (6 bips alternados)</li>
+                        <li><strong>Notificação do sistema</strong> - Notification API</li>
+                        <li><strong>Vibração</strong> - Vibration API (~3 segundos)</li>
+                        <li><strong>Alerta visual</strong> - Banner verde na tela</li>
+                    </ol>
+                </div>
+                <span class="test-status status-pass">✅ Implementado</span>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-013: Permissão de Notificação</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O app deve gerenciar permissões de notificação:
+                    <ul>
+                        <li>Solicita automaticamente ao iniciar timer</li>
+                        <li>Botão dedicado para solicitar manualmente</li>
+                        <li>Exibe status da permissão</li>
+                    </ul>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica botão quando não concedida</li>
+                        <li>✅ Verifica badge quando ativada</li>
+                        <li>✅ Testa solicitação de permissão</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <h3>🔒 Wake Lock API</h3>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-021: Ativação Automática</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> Wake Lock é ativado automaticamente quando o timer inicia, mantendo a tela do dispositivo ligada.
+                    <br><br>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica ativação ao iniciar timer</li>
+                        <li>✅ Verifica indicador visual (🔒)</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <h3>🎨 Interface do Usuário</h3>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-026: Formatação de Tempo</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> O tempo deve ser formatado como <code>MM:SS</code> com padding de zeros.
+                    <br><br>
+                    <strong>Exemplos:</strong> <code>25:00</code>, <code>05:30</code>, <code>00:15</code>
+                    <br><br>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica padding de zeros</li>
+                        <li>✅ Verifica formatação correta</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-id">RN-027: Progresso Visual</div>
+                <div class="rule-description">
+                    <strong>Regra:</strong> Círculo SVG mostra progresso com cores específicas por modo:
+                    <ul>
+                        <li>🔴 Pomodoro: Vermelho (<code>text-red-500</code>)</li>
+                        <li>🟢 Pausa Curta: Verde (<code>text-green-500</code>)</li>
+                        <li>🔵 Pausa Longa: Azul (<code>text-blue-500</code>)</li>
+                    </ul>
+                    <strong>Testes:</strong>
+                    <ul>
+                        <li>✅ Verifica cor vermelha para Pomodoro</li>
+                        <li>✅ Verifica cor verde para Pausa Curta</li>
+                        <li>✅ Verifica cor azul para Pausa Longa</li>
+                    </ul>
+                </div>
+                <span class="test-status status-pass">✅ Testes Passando</span>
+            </div>
+
+            <h2>🚀 Executando os Testes</h2>
+
+            <h3>Instalação</h3>
+            <div class="command-box">
+$ npm install
+            </div>
+
+            <h3>Executar Testes</h3>
+            <div class="command-box">
+# Modo watch (desenvolvimento)
+$ npm test
+
+# Executar uma vez
+$ npm run test:run
+
+# Com interface visual
+$ npm run test:ui
+
+# Com cobertura
+$ npm run test:coverage
+            </div>
+
+            <h3>Estrutura de Testes</h3>
+            <pre>
+pomodoro-timer/
+├── src/
+│   ├── App.tsx              # Componente principal
+│   ├── App.test.tsx         # Testes unitários
+│   └── test/
+│       └── setup.ts         # Configuração dos testes
+├── vite.config.ts           # Configuração do Vitest
+└── BUSINESS_RULES.md        # Documentação completa
+            </pre>
+
+            <h2>📚 Documentação Completa</h2>
+            
+            <p>Para ver a documentação completa de todas as 35 regras de negócio, consulte:</p>
+            <ul>
+                <li><a href="https://github.com/danvitoriano/pomodoro-timer/blob/main/BUSINESS_RULES.md" target="_blank">BUSINESS_RULES.md no GitHub</a></li>
+                <li><a href="https://github.com/danvitoriano/pomodoro-timer/blob/main/src/App.test.tsx" target="_blank">Código dos testes no GitHub</a></li>
+            </ul>
+
+            <h2>🎯 Próximos Passos</h2>
+            
+            <ul>
+                <li>✅ Implementar testes para as 10 regras restantes</li>
+                <li>✅ Aumentar cobertura de código para > 80%</li>
+                <li>✅ Adicionar testes de integração end-to-end</li>
+                <li>✅ Implementar testes de performance</li>
+                <li>✅ Adicionar testes de acessibilidade</li>
+            </ul>
+
+            <h2>🤝 Contribuindo</h2>
+            
+            <p>Quer ajudar a melhorar os testes? Veja como:</p>
+            <ol>
+                <li>Fork o projeto</li>
+                <li>Crie uma branch para seus testes (<code>git checkout -b test/nova-feature</code>)</li>
+                <li>Escreva testes seguindo o padrão existente</li>
+                <li>Garanta que todos os testes passam (<code>npm run test:run</code>)</li>
+                <li>Commit suas mudanças (<code>git commit -m 'test: adiciona testes para X'</code>)</li>
+                <li>Push para a branch (<code>git push origin test/nova-feature</code>)</li>
+                <li>Abra um Pull Request</li>
+            </ol>
+        </div>
+
+        <footer>
+            <p>Feito com ❤️ e 🧪 por <a href="https://github.com/danvitoriano" target="_blank">Dan Vitoriano</a></p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">© 2025 - Pomodoro Timer</p>
+        </footer>
+    </div>
+</body>
+</html>
+
