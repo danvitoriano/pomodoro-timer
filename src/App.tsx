@@ -18,6 +18,7 @@ function App() {
   const [showAlert, setShowAlert] = useState(false)
   const [wakeLockActive, setWakeLockActive] = useState(false)
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default')
+  const [timerCompletedInBackground, setTimerCompletedInBackground] = useState(false)
   const intervalRef = useRef<number | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const wakeLockRef = useRef<WakeLockSentinel | null>(null)
@@ -219,23 +220,38 @@ function App() {
   // Detectar quando a página volta ao foco e recalcular o tempo
   useEffect(() => {
     const handleVisibilityChange = () => {
-      // Verificar estado salvo quando a página volta ao foco
-      const savedState = localStorage.getItem('pomodoroState')
-      if (!document.hidden && savedState) {
-        try {
-          const { startTime, initialTime } = JSON.parse(savedState)
-          const elapsed = Math.floor((Date.now() - startTime) / 1000)
-          const newTimeLeft = Math.max(0, initialTime - elapsed)
+      if (!document.hidden) {
+        // Mostrar alerta se o timer terminou em background
+        if (timerCompletedInBackground) {
+          setTimerCompletedInBackground(false)
+          setShowAlert(true)
+          playNotificationSound()
+          setTimeout(() => setShowAlert(false), 10000) // 10 segundos
           
-          if (newTimeLeft === 0) {
-            // Timer terminou enquanto estava em background
-            handleTimerComplete()
-          } else if (isRunning && startTimeRef.current) {
-            // Atualizar o tempo se ainda estiver rodando
-            setTimeLeft(newTimeLeft)
+          // Vibração extra forte
+          if ('vibrate' in navigator) {
+            navigator.vibrate([1000, 300, 1000, 300, 1000])
           }
-        } catch (err) {
-          console.error('Erro ao verificar estado:', err)
+        }
+        
+        // Verificar estado salvo quando a página volta ao foco
+        const savedState = localStorage.getItem('pomodoroState')
+        if (savedState) {
+          try {
+            const { startTime, initialTime } = JSON.parse(savedState)
+            const elapsed = Math.floor((Date.now() - startTime) / 1000)
+            const newTimeLeft = Math.max(0, initialTime - elapsed)
+            
+            if (newTimeLeft === 0) {
+              // Timer terminou enquanto estava em background
+              handleTimerComplete()
+            } else if (isRunning && startTimeRef.current) {
+              // Atualizar o tempo se ainda estiver rodando
+              setTimeLeft(newTimeLeft)
+            }
+          } catch (err) {
+            console.error('Erro ao verificar estado:', err)
+          }
         }
       }
     }
@@ -252,7 +268,7 @@ function App() {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('focus', handleFocus)
     }
-  }, [isRunning])
+  }, [isRunning, timerCompletedInBackground])
 
   // Salvar estado no localStorage
   useEffect(() => {
@@ -312,9 +328,10 @@ function App() {
               console.warn('Notificação não pode ser criada. Permissão:', Notification.permission)
             }
             
-            // Vibração
+            // Vibração forte e longa
             if ('vibrate' in navigator) {
-              navigator.vibrate([200, 100, 200, 100, 200, 100, 200])
+              // Padrão de vibração bem forte: 3 segundos de vibrações
+              navigator.vibrate([500, 200, 500, 200, 500, 200, 500, 200, 500])
             }
             
             // Se a página estiver visível, atualizar o estado
@@ -329,6 +346,9 @@ function App() {
               if (savedMode === 'pomodoro') {
                 setPomodorosCompleted((count) => count + 1)
               }
+            } else {
+              // Se terminou em background, marcar para mostrar alerta quando voltar
+              setTimerCompletedInBackground(true)
             }
           }
         } catch (err) {
@@ -357,9 +377,10 @@ function App() {
       ? '🎉 Pomodoro completo! Hora de fazer uma pausa!' 
       : '✨ Pausa terminada! Hora de voltar ao trabalho!'
 
-    // Vibração em dispositivos móveis (se suportado)
+    // Vibração forte em dispositivos móveis (se suportado)
     if ('vibrate' in navigator) {
-      navigator.vibrate([200, 100, 200, 100, 200, 100, 200])
+      // Padrão de vibração bem forte: 3 segundos
+      navigator.vibrate([500, 200, 500, 200, 500, 200, 500, 200, 500])
     }
 
     // Mostrar notificação do navegador com som
@@ -703,13 +724,18 @@ function App() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-4 sm:mt-6 text-gray-500 text-xs sm:text-sm md:text-base px-4 space-y-1">
+        <div className="text-center mt-4 sm:mt-6 text-gray-500 text-xs sm:text-sm md:text-base px-4 space-y-2">
           <p>Técnica Pomodoro: 25 min foco + 5 min pausa</p>
           {wakeLockActive && (
             <p className="text-green-400 text-xs sm:text-sm">
               🔒 Tela mantida ativa durante o timer
             </p>
           )}
+          {/* Aviso sobre iOS */}
+          <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-3 text-xs text-blue-300">
+            <p className="font-semibold mb-1">📱 Dica para iOS/Safari:</p>
+            <p>Mantenha o app aberto ou a tela ligada para receber o alerta quando o timer terminar. Notificações em background não funcionam no Safari iOS.</p>
+          </div>
         </div>
       </div>
     </div>
