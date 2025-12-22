@@ -19,10 +19,38 @@ function App() {
   const intervalRef = useRef<number | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const wakeLockRef = useRef<WakeLockSentinel | null>(null)
+  const startTimeRef = useRef<number | null>(null)
+  const initialTimeRef = useRef<number>(TIMER_DURATIONS.pomodoro)
 
   useEffect(() => {
     // Inicializar AudioContext para criar sons personalizados
     audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+    
+    // Recuperar estado salvo do localStorage
+    const savedState = localStorage.getItem('pomodoroState')
+    if (savedState) {
+      try {
+        const { startTime, initialTime, mode: savedMode, isRunning: wasRunning } = JSON.parse(savedState)
+        if (wasRunning && startTime) {
+          const elapsed = Math.floor((Date.now() - startTime) / 1000)
+          const newTimeLeft = Math.max(0, initialTime - elapsed)
+          
+          if (newTimeLeft > 0) {
+            setMode(savedMode)
+            setTimeLeft(newTimeLeft)
+            setIsRunning(true)
+            startTimeRef.current = startTime
+            initialTimeRef.current = initialTime
+          } else {
+            // Timer já terminou enquanto estava fechado
+            localStorage.removeItem('pomodoroState')
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao recuperar estado:', err)
+        localStorage.removeItem('pomodoroState')
+      }
+    }
     
     return () => {
       if (audioContextRef.current) {
@@ -122,13 +150,31 @@ function App() {
     }
   }, [isRunning])
 
+  // Timer baseado em timestamp real para funcionar mesmo quando a tela trava
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
+      // Salvar o tempo de início e o tempo inicial quando começar
+      if (!startTimeRef.current) {
+        startTimeRef.current = Date.now()
+        initialTimeRef.current = timeLeft
+      }
+
       intervalRef.current = window.setInterval(() => {
-        setTimeLeft((time) => time - 1)
-      }, 1000)
-    } else if (timeLeft === 0) {
-      handleTimerComplete()
+        if (startTimeRef.current) {
+          // Calcular tempo decorrido desde o início
+          const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000)
+          const newTimeLeft = Math.max(0, initialTimeRef.current - elapsed)
+          
+          setTimeLeft(newTimeLeft)
+          
+          if (newTimeLeft === 0) {
+            handleTimerComplete()
+          }
+        }
+      }, 100) // Atualizar a cada 100ms para maior precisão
+    } else {
+      // Limpar referências quando pausar
+      startTimeRef.current = null
     }
 
     return () => {
@@ -138,8 +184,46 @@ function App() {
     }
   }, [isRunning, timeLeft])
 
+  // Detectar quando a página volta ao foco e recalcular o tempo
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && isRunning && startTimeRef.current) {
+        // Recalcular o tempo quando a página volta ao foco
+        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000)
+        const newTimeLeft = Math.max(0, initialTimeRef.current - elapsed)
+        setTimeLeft(newTimeLeft)
+        
+        if (newTimeLeft === 0) {
+          handleTimerComplete()
+        }
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [isRunning])
+
+  // Salvar estado no localStorage
+  useEffect(() => {
+    if (isRunning && startTimeRef.current) {
+      const state = {
+        startTime: startTimeRef.current,
+        initialTime: initialTimeRef.current,
+        mode,
+        isRunning: true
+      }
+      localStorage.setItem('pomodoroState', JSON.stringify(state))
+    } else {
+      localStorage.removeItem('pomodoroState')
+    }
+  }, [isRunning, mode])
+
   const handleTimerComplete = () => {
     setIsRunning(false)
+    startTimeRef.current = null
     
     // Tocar som de notificação
     playNotificationSound()
@@ -242,12 +326,16 @@ function App() {
   const resetTimer = () => {
     setIsRunning(false)
     setTimeLeft(TIMER_DURATIONS[mode])
+    startTimeRef.current = null
+    initialTimeRef.current = TIMER_DURATIONS[mode]
   }
 
   const switchMode = (newMode: TimerMode) => {
     setMode(newMode)
     setTimeLeft(TIMER_DURATIONS[newMode])
     setIsRunning(false)
+    startTimeRef.current = null
+    initialTimeRef.current = TIMER_DURATIONS[newMode]
   }
 
   const formatTime = (seconds: number) => {

@@ -14,6 +14,9 @@ Um timer Pomodoro moderno e elegante construído com React, TypeScript, Tailwind
 - 🔒 **Wake Lock API** - mantém a tela do celular ligada durante o timer
 - 📳 Vibração em dispositivos móveis ao completar
 - 🎯 Layout otimizado para mobile (Chrome e Safari)
+- ⏰ **Timer baseado em timestamp real** - continua rodando mesmo quando a tela trava
+- 💾 **Persistência de estado** - timer continua mesmo se você fechar o app
+- 🔄 **Recuperação automática** - recalcula o tempo correto ao voltar ao app
 
 ## 🚀 Tecnologias
 
