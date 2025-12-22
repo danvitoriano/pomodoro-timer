@@ -8,9 +8,12 @@ Um timer Pomodoro moderno e elegante construído com React, TypeScript, Tailwind
 - 🎨 Interface moderna e responsiva com Tailwind CSS
 - 📱 Progressive Web App (PWA) - instale no seu dispositivo
 - 🔔 Notificações do navegador quando o timer termina
-- 🔊 Som de alerta ao completar
+- 🔊 Som de alerta alto e chamativo ao completar
 - 📊 Contador de pomodoros completados
 - 🌙 Design dark mode elegante
+- 🔒 **Wake Lock API** - mantém a tela do celular ligada durante o timer
+- 📳 Vibração em dispositivos móveis ao completar
+- 🎯 Layout otimizado para mobile (Chrome e Safari)
 
 ## 🚀 Tecnologias
 
