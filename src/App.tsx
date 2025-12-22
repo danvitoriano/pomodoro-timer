@@ -17,6 +17,7 @@ function App() {
   const [pomodorosCompleted, setPomodorosCompleted] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
   const [wakeLockActive, setWakeLockActive] = useState(false)
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default')
   const intervalRef = useRef<number | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const wakeLockRef = useRef<WakeLockSentinel | null>(null)
@@ -27,14 +28,10 @@ function App() {
     // Inicializar AudioContext para criar sons personalizados
     audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
     
-    // Solicitar permissão de notificação logo no início
+    // Verificar permissão de notificação
     if ('Notification' in window) {
       console.log('Permissão de notificação atual:', Notification.permission)
-      if (Notification.permission === 'default') {
-        Notification.requestPermission().then(permission => {
-          console.log('Nova permissão de notificação:', permission)
-        })
-      }
+      setNotificationPermission(Notification.permission)
     } else {
       console.warn('Notification API não suportada neste navegador')
     }
@@ -443,6 +440,7 @@ function App() {
     if ('Notification' in window) {
       if (Notification.permission === 'default') {
         Notification.requestPermission().then(permission => {
+          setNotificationPermission(permission)
           if (permission === 'granted') {
             new Notification('🍅 Pomodoro Timer', {
               body: '✅ Notificações ativadas com sucesso!',
@@ -456,6 +454,35 @@ function App() {
           icon: '/pwa-192x192.png',
         })
       }
+    }
+  }
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      try {
+        const permission = await Notification.requestPermission()
+        setNotificationPermission(permission)
+        console.log('Permissão de notificação:', permission)
+        
+        if (permission === 'granted') {
+          new Notification('🍅 Pomodoro Timer', {
+            body: '✅ Notificações ativadas! Agora você receberá alertas quando o timer terminar.',
+            icon: '/pwa-192x192.png',
+          })
+          
+          // Vibração de sucesso
+          if ('vibrate' in navigator) {
+            navigator.vibrate([100, 50, 100])
+          }
+        } else if (permission === 'denied') {
+          alert('⚠️ Notificações bloqueadas!\n\nPara receber alertas:\n1. Vá em Ajustes > Safari > Notificações\n2. Permita notificações para este site')
+        }
+      } catch (err) {
+        console.error('Erro ao solicitar permissão:', err)
+        alert('⚠️ Este navegador não suporta notificações web.\n\nNo Safari iOS, notificações web só funcionam se você adicionar o app à tela inicial.')
+      }
+    } else {
+      alert('⚠️ Notificações não suportadas!\n\nPara usar notificações no Safari iOS:\n1. Toque no botão Compartilhar\n2. Selecione "Adicionar à Tela de Início"\n3. Abra o app pela tela inicial')
     }
   }
 
@@ -638,6 +665,22 @@ function App() {
 
           {/* Botões de Teste */}
           <div className="space-y-2">
+            {/* Status de Notificação */}
+            {notificationPermission !== 'granted' && (
+              <button
+                onClick={requestNotificationPermission}
+                className="w-full py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-bold text-sm sm:text-base md:text-lg bg-orange-600 hover:bg-orange-700 text-white transition-all border-2 border-orange-500 animate-pulse"
+              >
+                🔔 Ativar Notificações
+              </button>
+            )}
+            
+            {notificationPermission === 'granted' && (
+              <div className="w-full py-2 px-3 rounded-xl text-sm bg-green-900/30 text-green-400 border border-green-700 text-center">
+                ✅ Notificações ativadas
+              </div>
+            )}
+            
             <button
               onClick={() => {
                 setMode('test')
